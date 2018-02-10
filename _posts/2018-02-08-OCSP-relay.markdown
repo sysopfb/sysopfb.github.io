@@ -177,9 +177,19 @@ Many avenues inside CRL files, you could store an almost endless amount of data 
 
 An example of this is a mimikatz binary that has been chunked up and encoded as revoked certificate serial numbers[[4]], or basically doing stegonagraphy inside CRL files.  
 
+An interesting thought on using stegonagraphy to store files inside CRL filaes is that Windows can cache CRL files[[16]] in a number of different ways whether using CryptoAPI or IE COM or loading it into the cert store using certutil[[17]]: 
 
+![Store Mimikatz CRL in cert store]({{ site.url }}/assets/store_mimikatz_crl.png "Store Mimikatz CRL in cert store")
 
+Here we can see the CRL file is in fact located in our cert store:  
 
+![Show Mimikatz CRL in cert store]({{ site.url }}/assets/show_stored_mimikatz_crl.png "Show Mimikatz CRL in cert store")
+
+Now if someone wants to dump the CRL file they can recover it:  
+
+![Dump Mimikatz CRL from cert store]({{ site.url }}/assets/dump_stored_mimikatz_crl.png "Dump Mimikatz CRL from cert store")
+
+After that just decode out and run the file we have embedded inside the CRL, in this case mimikatz :)
 
 
   
@@ -200,6 +210,9 @@ References:
  13. http://luca.ntop.org/Teaching/Appunti/asn1.html  
  14. https://www.maikel.pro/blog/current-state-certificate-revocation-crls-ocsp/  
  15. https://www.fidelissecurity.com/threatgeek/2018/02/exposing-x509-vulnerabilities  
+ 16. https://windoh.wordpress.com/2011/04/23/crl-caching-in-windows-and-a-little-bit-about-ocsp-caching-too/  
+ 17. https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/certutil  
+ 
  
  
 
@@ -220,6 +233,9 @@ References:
 [13]:http://luca.ntop.org/Teaching/Appunti/asn1.html  
 [14]:https://www.maikel.pro/blog/current-state-certificate-revocation-crls-ocsp/  
 [15]:https://www.fidelissecurity.com/threatgeek/2018/02/exposing-x509-vulnerabilities  
+[16]:https://windoh.wordpress.com/2011/04/23/crl-caching-in-windows-and-a-little-bit-about-ocsp-caching-too/  
+[17]:https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/certutil  
+
 
 
 
