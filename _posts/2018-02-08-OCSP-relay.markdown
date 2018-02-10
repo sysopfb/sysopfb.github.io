@@ -166,7 +166,9 @@ Client example code:
 	}
 {% endhighlight %}
 
-Still trying to get this to work with Apache, if anyone has any luck feel free to hit me up on twitter or over email. It would be an interesting technique if you could find a healthy list of these specifically configured web servers on the internet for use as traffic relays via OCSP. Ofcourse the alternative is simply to create your own TLS server that will act as a proxy to your malicious OCSP server, or to simply perform an OCSP request to your malicious OCSP server directly as was outlined in the earlier code block demonstrating an OCSP request in GO as an example. That example code would be enough for anyone to create a simple OCSP server using GO example code[[10],[11]]
+Still trying to get this to work with Apache, if anyone has any luck feel free to hit me up on twitter or over email. It would be an interesting technique if you could find a healthy list of these specifically configured web servers on the internet for use as traffic relays via OCSP. It wouldn't even really need to be a web server, any sort of system that supports OCSP validation of client certificates would potentiall allow this scenario to play out.  
+
+Ofcourse the alternative is simply to create your own TLS server that will act as a proxy to your malicious OCSP server, or to simply perform an OCSP request to your malicious OCSP server directly as was outlined in the earlier code block demonstrating an OCSP request in GO as an example. That example code would be enough for anyone to create a simple OCSP server using GO [[10],[11]].  
 
 
 # CRL
