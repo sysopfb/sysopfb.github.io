@@ -1,0 +1,194 @@
+---
+layout: post
+title:  "Cracking the Marcher APK zip"
+date:   2018-04-02 10:31:12 -0600
+categories: malware, android
+---
+
+  
+
+# Marcher APK
+
+While searching around for new Android malware I stumpled upon a report related to Marcher, an android banking trojan, by Nokia[[1]]. The report mentions that the trojan downloads a zip file but that they couldn't find the password. As a TL:DR on the research into the APK itself and how it uses this zip file well it's basically a collection of inject sites that are each associated with banking sites to be used by the trojan. Ofcourse since it uses the files the password is in the APK, somewhere. Since the malware does use some obfuscation techniques and this isn't a post into how to reverse obfuscated APKs(this time). I'm using this as a good example of how you can use a technique I honestly don't get a chance to mess with too much and that's attacking zip files using known plain text attacks.
+
+
+# Cracking the Marchers ZIP
+
+Some quick pivoting and googling around leads to a few zip files from a server associated with this malware, we'll start with one related zip to the one from the Nokia report(archiveau1.zip). This zip comes from a server found by our pivoting on existing research, while the files on it are encrypted the structure is the same as the server from which the zip file came from. If you go to the bottom of the Nokia report you'll see references to a webfake system:
+
+```json
+{
+"arc": "archive/injek-52.html",
+"li": "archive/li/ic_pp.png",
+"si": "ic_stat_ic_notification_pp",
+"to": "com.paypal.android.p2pmobile",
+"type": "payment",
+"web": http://94.130.97.18/injek-52.html
+}
+```
+
+Going to the /arc/ folder on this 94.130.97.18 server will show three zip files that are all encrypted with the same password.
+
+![Marcher Webfake Server]({{ site.url }}/assets/marcher_zip/server_open_dir.png "Open directory on Marcher server")
+
+
+For attacking the zip file we will use a toolset built based on the research from Eli Biham and Paul Kocher[[3]], the toolset named PKCRACK[[2]]. Similar instructions to what we'll be doing below can be found in a blog post by securiteam[[4]].
+
+Using the structure of the files in the encrypted zip we can pull down a cleartext version of one of the files from an active C2, in this case spinner.gif is a decently large file but there are also publicly available jquery libraries in the zip as well. First we add the clear text version of the file to a zip:
+
+```
+# 7z a blah.zip spinner.gif
+```
+
+Then we remove the original and extract the file from the zip using the extract utility from PKCRACK, renaming this extracted file as spinnerPlain.gif
+
+```
+# rm spinner.gif
+# ./extract -p blah.zip spinner.gif
+# mv spinner.gif spinnerPlain.gif 
+```
+
+Now we just extract the same file from the encrypted archive and rename it as spinnerCrypt.gif
+
+```
+# ./extract -p archiveau1.zip spinner.gif
+# mv spinner.gif spinnerCrypt.gif
+```
+
+The file sizes should be similar to below where the encrypted version of the file is 12 bytes larger than the plain text version.
+
+```
+# ls -l spinner*
+-rw-r--r-- 1 root root 126054 Mar 31 19:08 spinnerCrypt.gif
+-rw-r--r-- 1 root root 126042 Mar 31 19:06 spinnerPlain.gif
+```
+
+Let's run the program responsible for finding the three key values that we'll need to decrypt the rest of the zip file, 
+
+```
+# ./pkcrack -c spinnerCrypt.gif -p spinnerPlain.gif
+Files read. Starting stage 1 on Sat Mar 31 19:09:57 2018
+Generating 1st generation of possible key2_126053 values...done.
+Found 4194304 possible key2-values.
+Now we're trying to reduce these...
+Lowest number: 965 values at offset 107292
+Lowest number: 963 values at offset 107289
+Lowest number: 875 values at offset 107286
+Lowest number: 868 values at offset 107277
+<..snip..>
+Lowest number: 112 values at offset 26668
+Lowest number: 106 values at offset 26666
+Lowest number: 104 values at offset 26665
+Lowest number: 85 values at offset 26629
+Done. Left with 85 possible Values. bestOffset is 26629.
+Stage 1 completed. Starting stage 2 on Sat Mar 31 19:10:27 2018
+Ta-daaaaa! key0=a604ea45, key1=b50715df, key2=6b6949b0
+Probabilistic test succeeded for 99429 bytes.
+Ta-daaaaa! key0=a604ea45, key1=b50715df, key2=6b6949b0
+Probabilistic test succeeded for 99429 bytes.
+```
+
+At this point we have the three keys we need to be able to run zipdecrypt and hopefully generate a non password protected version of the archive.
+
+```
+# ./zipdecrypt a604ea45 b50715df 6b6949b0 archiveau1.zip archiveau1_d.zip
+Decrypting .media (c9866a1b403ccf8df2620000)... OK!
+Decrypting archive/commid/.DS_Store (030e28173d8cb7afb7f188b6)... OK!
+Decrypting archive/commid/commid.html (856563164149186129fc70bc)... OK!
+Decrypting archive/commid/comm/01.php (897d28fa5c41ef3c5d683690)... OK!
+Decrypting archive/commid/comm/css/injek-1.css (06e8a812db100fd102ab8264)... OK!
+Decrypting archive/commid/comm/css/ocra_medium.ttf (f4f9eea0fe2069be901b812e)... OK!
+Decrypting archive/commid/comm/css/reset.css (b990b1e58a9fa4ed2e458273)... OK!
+Decrypting archive/commid/comm/go.php (3f5f96b8dd62f7304470a585)... OK!
+Decrypting archive/commid/comm/images/injek-1/client_number_icon.png (18c9805b6f39a4cd58a2a8d0)... OK!
+Decrypting archive/commid/comm/images/injek-1/dots.png (7569b443b373df5c67c0fee7)... OK!
+Decrypting archive/commid/comm/images/injek-1/ic_lock.png (380ec17cf1d8f4c0d075e8d2)... OK!
+Decrypting archive/commid/comm/images/injek-1/logo.png (d0ccebf316cfe496fe76ae51)... OK!
+Decrypting archive/commid/comm/images/injek-1/men.png (e99c5d15aaf200b183c65411)... OK!
+Decrypting archive/commid/comm/images/injek-1/move.png (22413a51aa1580988f44c737)... OK!
+Decrypting archive/commid/comm/images/injek-1/password_icon.png (1eddce4d9078aff11c53d1f7)... OK!
+Decrypting archive/commid/comm/images/injek-1/spinner.gif (d3b08aa62abf7f75e4ceff0f)... OK!
+Decrypting archive/commid/comm/images/injek-1/strelka.png (31d9cab5589cfc8aa9011627)... OK!
+Decrypting archive/commid/comm/images/injek-1/transfer.png (6997338fbf5979d9c586e039)... OK!
+Decrypting archive/commid/comm/js/jquery-2.1.4.min.js (42c217f11c547bcfe6c3b3f1)... OK!
+Decrypting archive/commid/comm/js/jquery.maskedinput.js (e77d6200cb67d721791b6caf)... OK!
+Decrypting archive/commid/css/injek-1.css (0761ccb1f6aa3de919194d05)... OK!
+Decrypting archive/commid/css/ocra_medium.ttf (95453cac9b757d99e483812e)... OK!
+Decrypting archive/commid/css/reset.css (f062a837098feb84155f8273)... OK!
+<..snip..>
+Decrypting archive/li/ic_us_b_skype.png (733c256d1407357a3ee42337)... OK!
+Decrypting archive/li/ic_us_b_snapchat.png (a3e30495219504c3ac65ff32)... OK!
+Decrypting archive/li/ic_us_b_tencent.png (571cca0fcf27c7319627ffee)... OK!
+Decrypting archive/li/ic_us_b_viber.png (7f4f981560280a2649e43a56)... OK!
+Decrypting archive/li/ic_us_b_walmart.png (2f29ceb2045df76547bb63de)... OK!
+Decrypting archive/li/ic_us_b_whatsapp.png (c97a0bd52dc4be2ca7ecad49)... OK!
+Decrypting archive/li/ic_west.png (0cf2ac45f1699105731225de)... OK!
+Decrypting archive/li/ic_westpac.png (75909050406477ebced9e5fe)... OK!
+Decrypting archive/li/ic_wu.png (1a47c95668fb14f92dd604c6)... OK!
+Decrypting archive/new-inj-0.css (7ba1c85a13e742b0c16f2925)... OK!
+Decrypting archive/new-inj-0.html (bb4c0778d20d684e9c8319b4)... OK!
+Decrypting archive/new-inj-1.html (810dded85b9ea60fd59b642c)... OK!
+Decrypting archive/new-inj-2.html (3f4dc01e387e85e7f0be4a1a)... OK!
+Decrypting archive/new-inj-23.html (c9658e1a8587e48d2e6c9f22)... OK!
+Decrypting archive/new-inj-24.html (b965647768986401cb5d6aab)... OK!
+Decrypting archive/new-inj-25.html (3aa1c63011806298e5997bdf)... OK!
+Decrypting archive/new-inj-26.html (f4961ed2aa85e7d1b70afc14)... OK!
+Decrypting archive/new-inj-27.html (1dc5b4408a120ed2a0ba5233)... OK!
+Decrypting archive/new-inj-28.html (e1efb5c74a83c46b8173cb8d)... OK!
+Decrypting archive/new-inj-29.html (252f03f3d2400a3ade1f2a96)... OK!
+Decrypting archive/preloader.png (7d1f099e100e58436dc01e7f)... OK!
+```
+
+Time to test it out:
+
+```
+# mkdir test
+# cp archiveau1_d.zip ./test/
+# cd test
+# ls
+archiveau1_d.zip
+# 7z x archiveau1_d.zip 
+```
+
+It appears our zip extracted properly but is the data still good? Let's check one of the php files from the server to verify.
+
+```
+# cd archive
+
+# head commid/comm/go.php
+<?php
+
+    $url = "http://88.99.32.31/111/form.php";
+    $successUrl = "http://google.com";
+   
+    function mysql_escape_mimic($inp) {
+        if(is_array($inp))
+            return array_map(__METHOD__, $inp);
+
+        if(!empty($inp) && is_string($inp)) { 
+```
+
+Another way to go about this is to key in on the code in the APK that appears to reference the downloaded archive folder, meaning the password should be somewhere in the APK. You can dump the strings from the APK and then setup a script to try each one in a brute force manner. I'll save you some time though for the zip files from our server the password is "b5jXh37gxgHBrZhQ4j3D".
+
+  
+
+References:  
+ 1. https://onestore.nokia.com/asset/201799/Nokia_Anatomy_of_an_Android_Banking_Trojan_Security_Note_Document_EN.pdf  
+ 2. https://www.unix-ag.uni-kl.de/~conrad/krypto/pkcrack.html  
+ 3. https://pdfs.semanticscholar.org/18dd/4b4d646b79b473448604254fc605c58eae7c.pdf  
+ 4. http://www.securiteam.com/tools/5NP0C009PU.html  
+ 5. https://clientsidedetection.com/marcher.html  
+ 6. https://www.proofpoint.com/us/threat-insight/post/credential-phishing-and-android-banking-trojan-combine-austrian-mobile-attacks  
+ 
+
+ 
+
+
+[1]:https://onestore.nokia.com/asset/201799/Nokia_Anatomy_of_an_Android_Banking_Trojan_Security_Note_Document_EN.pdf  
+[2]:https://www.unix-ag.uni-kl.de/~conrad/krypto/pkcrack.html  
+[3]:https://pdfs.semanticscholar.org/18dd/4b4d646b79b473448604254fc605c58eae7c.pdf  
+[4]:http://www.securiteam.com/tools/5NP0C009PU.html  
+[5]:https://clientsidedetection.com/marcher.html  
+[6]:https://www.proofpoint.com/us/threat-insight/post/credential-phishing-and-android-banking-trojan-combine-austrian-mobile-attacks  
+
+
