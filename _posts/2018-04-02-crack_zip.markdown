@@ -170,6 +170,10 @@ It appears our zip extracted properly but is the data still good? Let's check on
 
 Another way to go about this is to key in on the code in the APK that appears to reference the downloaded archive folder, meaning the password should be somewhere in the APK. You can dump the strings from the APK and then setup a script to try each one in a brute force manner. I'll save you some time though for the zip files from our server the password is "b5jXh37gxgHBrZhQ4j3D".
 
+Zip samples:
+https://beta.virusbay.io/sample/browse/62d1595a49c5ff49cd5d00c9cadd3c87  
+https://beta.virusbay.io/sample/browse/4e16daa0a9b8d27325a8b99132b8f29c  
+https://beta.virusbay.io/sample/browse/e7f707c748c2c2876233cc84fe722c25  
   
 
 References:  
