@@ -168,7 +168,8 @@ References:
 2. https://www.virustotal.com/#/intelligence-overview
 3. https://www.fortinet.com/blog/threat-research/unmasking-android-malware-a-deep-dive-into-a-new-rootnik-variant-part-i.html
 4. https://link.springer.com/article/10.1186/s13638-016-0720-3
-5. https://link.springer.com/article/10.1186/s13638-016-0720-3
+5. https://arxiv.org/pdf/1801.01633.pdf
+6. https://d3gpjj9d20n0p3.cloudfront.net/fortiguard/research/AndroidPackers_Hacktivity.pdf
 
 
 [1]:https://info.phishlabs.com/blog/bankbot-anubis-threat-upgrade
