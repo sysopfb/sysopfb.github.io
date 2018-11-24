@@ -246,6 +246,8 @@ IOCs:
 ```
 6176941029763c6d91d408f3d63f1006de97eba45cb891b6a55f538d299b8a8c - HTA file
 cba2820381969252a90caec4cb517cdafc9e01fd77aae7183e695211dc2756dd - Fake JQuery file
+jquery.amazoncdn.org
+35.182.31.181
 ```
 
 
