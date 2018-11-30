@@ -25,7 +25,7 @@ We can take a peak at a PCAP and see this data in there after the Trans2 respons
 
 We can even see the usage of the 'BAAD' string straight from the POC on github along with the URL for the worming.png file tacked on as well.
 
-![Code blob]({{ site.url }}/assets/trickbotworm/shellcode_prologue.png "Code blob")
+![Code blob]({{ site.url }}/assets/trickbotworm/shellcode_blob.png "Code blob")
 
 As mentioned in the blog[[5]] after you get through the normal POC shellcode you get to some different shellcode that ends up being injected into services.exe.
 
