@@ -111,23 +111,23 @@ test ./embedded.swf
 ```
 
 # Tools used
-JPEXS Flash decompiler
-IDA Pro
-Radare2
-py\_flash\_parser[[1]]
-YARA
-
+JPEXS Flash decompiler  
+IDA Pro  
+Radare2  
+py\_flash\_parser[[1]]  
+YARA  
+ 
 # IOCS
-Rar file:
-1232402bef625dc8328ece768e9943667389aed97207cf24f5215fe88b5f88ec
-Doc:
-9c6fbe25429d177fcac4cb53f85dacc58d84a618e3bddd1181cd0e604cb522ce
-ActiveX1.bin object:
-cc146e473f27064b059e425bdc095ea257445decfecafbe973d4626b104defaa
-Embedded Flash file exploit:
-1f2d731ba8c86b277d234a8bf95c31aa943f28f0d456be4a6a60f18625c46f79
-32bit shellcode from BinaryData:
-0aca0a8da932b34c3357909eb38712f21607e83f7912766330d9b695681cd353
+Rar file:  
+1232402bef625dc8328ece768e9943667389aed97207cf24f5215fe88b5f88ec  
+Doc:  
+9c6fbe25429d177fcac4cb53f85dacc58d84a618e3bddd1181cd0e604cb522ce  
+ActiveX1.bin object:  
+cc146e473f27064b059e425bdc095ea257445decfecafbe973d4626b104defaa  
+Embedded Flash file exploit:  
+1f2d731ba8c86b277d234a8bf95c31aa943f28f0d456be4a6a60f18625c46f79  
+32bit shellcode from BinaryData:  
+0aca0a8da932b34c3357909eb38712f21607e83f7912766330d9b695681cd353  
 
 
 
