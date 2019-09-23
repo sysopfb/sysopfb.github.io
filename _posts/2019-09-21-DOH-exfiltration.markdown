@@ -107,6 +107,19 @@ comp(Ramathorn.DC.EN.LOC, proc(pos.exe, data(;1234567890123445=99011X10XXXXXXX00
 ```
 
 
+We can also just use curl against the server directly instead of using the client piece
+
+```
+$ curl -v --doh-url  "https://127.0.0.1:8053/dns-query" "http://c9c5c7da82f8cbc7cbdec2c5d8c484eee984efe484.e6e5e9868adad8c5c982dac5d984cfd2cf868acecbdecb82919.b98999e9f9c9d92939a9b98999e9e9.f9793939a9b9bf29b9af2f2f2f2f2f2f29a9a9a9a9a838383.google.com"
+
+```
+
+Or
+
+```
+$ curl -k "https://127.0.0.1:8053/dns-query?ct=application/dns-message&dns=AAABIAABAAAAAAABKmM5YzVjN2RhODJmOGNiYzdjYmRlYzJjNWQ4YzQ4NGVlZTk4NGVmZTQ4NDNlNmU1ZTk4NjhhZGFkOGM1Yzk4MmRhYzVkOTg0Y2ZkMmNmODY4YWNlY2JkZWNiODI5MTkeYjk4OTk5ZTlmOWM5ZDkyOTM5YTliOTg5OTllOWU5MWY5NzkzOTM5YTliOWJmMjliOWFmMmYyZjJmMmYyZjJmMjlhOWE5YTlhOWE4MzgzODMGZ29vZ2xlA2NvbQAAAQABAAApEAAAAAAAAAA"
+
+```
 
 
 References:  
