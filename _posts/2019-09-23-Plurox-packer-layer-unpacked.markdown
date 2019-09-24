@@ -11,9 +11,9 @@ Recently saw someone mentioning a sample of Plurox performing code flow obfuscat
 The file we'll be looking at is 0385038427750543d98ce02a2a24aef45a937ef226a53fc3f995b5cea513b1c8
 
 PDB:
-{noformat}
+```
 E:\OldSoftware\Generating\Crypto\crypto.pdb
-{noformat}
+```
 
 # Strings
 Encoded strings is pretty common in malware and especially in protection layers such as crypters/packers and droppers/loaders.
