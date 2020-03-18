@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Loaders loading loaders, Buer to Smoke"
+title:  "Loaders a plenty, Buer to Smoke"
 date:   2020-03-18 10:31:12 -0600
 categories: malware, buer, smokeloader
 ---
