@@ -58,8 +58,8 @@ A language check using GetKeyboardLayout:
 ![Keyboard Language Check]({{ site.url }}/assets/smokeloader/keyboardlayout_ida.png "Keyboard Language Check")
 
 
-Ultimately this is a wrapper that performs a number of checks such as the IsBeingDebugged flag and the NtGlobalFlag and will eventually decode the next layer which will be injected into explorer. The DLL still has its headers stripped which has been covered by hasherzade previously[1].
-This sample comes with both a 32 bit and a 64 bit version, the loader checks the GS segment register to determine which one to load[2].
+Ultimately this is a wrapper that performs a number of checks such as the IsBeingDebugged flag and the NtGlobalFlag and will eventually decode the next layer which will be injected into explorer. The DLL still has its headers stripped which has been covered by hasherzade previously[[1]].
+This sample comes with both a 32 bit and a 64 bit version, the loader checks the GS segment register to determine which one to load[[2]].
 
 
 ![Bit check]({{ site.url }}/assets/smokeloader/64bit_gs_check_ida.png "Bit Check")
@@ -94,7 +94,7 @@ After being XOR decoded and LZNT decompressed the DLL has its headers stripped a
 
 ```
 
-So we can reconstruct pretty easily and rebuild both the 32 bit and 64 bit DLLs. This will be mapped into explorer by using resolved functions from a manually loaded copy of NTDLL, a technique that isn't new but was previously seen being used by SmokeLoader by CheckPoint[3].
+So we can reconstruct pretty easily and rebuild both the 32 bit and 64 bit DLLs. This will be mapped into explorer by using resolved functions from a manually loaded copy of NTDLL, a technique that isn't new but was previously seen being used by SmokeLoader by CheckPoint[[3]].
 It finds explorer by using GetShellWindow -> GetWindowThreadProcessId and then begins mapping in the DLL.
 
 The strings in the DLL are decoded in a similar manner as I have previously written about[4] but instead of decoding the entire block the strings are decoded in sequence with each string being decoded using RC4 the block of strings then is an array of structures like so:
@@ -155,11 +155,11 @@ Accept: */*
 Referer: %S
 ```
 
-The C2 URL encoding was also changed as mentioned by CheckPoint[3].
+The C2 URL encoding was also changed as mentioned by CheckPoint[[3]].
 
 ![C2 Decoding]({{ site.url }}/assets/smokeloader/decode_c2s.png "C2 Decoding")
 
-Using the same routine from Cert-PLs blog on SmokeLoader[5] we can slightly modify it to decoded out the C2 URLs:
+Using the same routine from Cert-PLs blog on SmokeLoader[[5]] we can slightly modify it to decoded out the C2 URLs:
 
 ```
 def smoke_unxor(enc_buf, dwordv):
